@@ -21,7 +21,7 @@ struct HeadedBytes<T> : TypedHeadedBytes {
         let typed:UnsafeMutablePointer<T>
         init(size:Int) {
             self.size = size < MemoryLayout<T>.size ? MemoryLayout<T>.size : size
-            typed = UnsafeMutableRawPointer.allocate(bytes: size, alignedTo: MemoryLayout<T>.alignment).bindMemory(to: T.self, capacity: 1)
+            typed = UnsafeMutableRawPointer.allocate(byteCount: size, alignment: MemoryLayout<T>.alignment).bindMemory(to: T.self, capacity: 1)
         }
         
         convenience init(copyFrom other:Memory<T> ) {
@@ -30,7 +30,7 @@ struct HeadedBytes<T> : TypedHeadedBytes {
         }
         
         deinit {
-            typed.deinitialize().deallocate(bytes: size, alignedTo: MemoryLayout<T>.alignment)
+            typed.deinitialize(count:size)
         }
     }
     
@@ -41,11 +41,19 @@ struct HeadedBytes<T> : TypedHeadedBytes {
     }
     
     @discardableResult mutating func withUnsafeMutablePointer<Result>(_ body:(UnsafeMutablePointer<T>) throws -> Result) rethrows -> Result {
-        // copy on write when shared
+        copyMemoryWhenShared()
+        return try body(memory.typed)
+    }
+    
+    private mutating func copyMemoryWhenShared(){
         if isKnownUniquelyReferenced(&memory) == false {
             memory = Memory<T>(copyFrom:memory)
         }
-        return try body(memory.typed)
+    }
+    
+    mutating func getMutablePointer()-> UnsafeMutablePointer<T> {
+        copyMemoryWhenShared()
+        return memory.typed
     }
     
     @discardableResult func withUnsafePointer<Result>(_ body:(UnsafePointer<T>) throws -> Result) rethrows -> Result {

@@ -48,11 +48,11 @@ struct MutablePacketList {
     
     mutating func addPacket(data:Data, timeStamp:MIDITimeStamp) -> Bool {
         
-        currentPacket = packetList.withUnsafeMutablePointer { packetList in
-            return data.withUnsafeBytes {
-                
-                return PacketListAdd(packetList:packetList, size:size, currentPacket:currentPacket, timeStamp:timeStamp, dataSize:data.count, data:$0)
-            }
+        let packetListPtr = packetList.getMutablePointer()
+        
+        currentPacket = data.withUnsafeBytes {
+            
+            return PacketListAdd(packetList:packetListPtr, size:size, currentPacket:currentPacket, timeStamp:timeStamp, dataSize:data.count, data:$0)
         }
         return currentPacket != nil
     }

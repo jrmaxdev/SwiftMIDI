@@ -14,12 +14,22 @@
 			<key>orderHint</key>
 			<integer>4</integer>
 		</dict>
+		<key>MIDIMetaEvent.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>4</integer>
+		</dict>
 		<key>MIDIPacketList.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>1</integer>
 		</dict>
 		<key>MIDIRawData.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>5</integer>
+		</dict>
+		<key>MIDIRawData.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>5</integer>
