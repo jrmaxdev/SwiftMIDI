@@ -24,6 +24,10 @@ class TestPlayer {
         self.player = player
     }
     
+    deinit {
+        DisposeMusicPlayer(player)
+    }
+    
     func setSequence(_ sequence:TestSequence) {
         MusicPlayerSetSequence(player, sequence.sequence)
     }
